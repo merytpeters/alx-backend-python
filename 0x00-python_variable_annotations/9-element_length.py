@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Duck typing an iterable object"""
-from typing import Sequence, List, Tuple, Any
+from typing import Iterable, Sequence, List, Tuple
 
 
-def element_length(lst: Sequence[Any]) -> List[Tuple[Sequence[Any], int]]:
+def element_length(lst: Iterable[Sequence]) -> List[Tuple[Sequence, int]]:
     return [(i, len(i)) for i in lst]
