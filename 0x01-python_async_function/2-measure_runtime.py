@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Measures total execution time"""
 
-
+import asyncio
 import time
 wait_n = __import__('1-concurrent_coroutines').wait_n
 
 
-async def measure_time(n: int, max_delay: int) -> float:
+def measure_time(n: int, max_delay: int) -> float:
     """Using the time module to measure time elapsed and returns
     total time / n"""
     if n <= 0:
@@ -15,7 +15,7 @@ async def measure_time(n: int, max_delay: int) -> float:
         raise ValueError("maximum delay must be a positive integer")
 
     start_time = time.time()
-    await wait_n(n, max_delay)
+    asyncio.run(wait_n(n, max_delay))
     end_time = time.time()
 
     total_time = end_time - start_time
