@@ -25,9 +25,10 @@ class TestAccessNestedMap(unittest.TestCase):
         ({"a": 1}, ("a", "b"))
     ])
     def test_access_nested_map_exception(
-        self, nested_map: Mapping, path: Sequence):
+        self, nested_map: Mapping, path: Sequence
+    ):
         with self.assertRaises(KeyError) as cm:
             access_nested_map(nested_map, path)
-        self.assertEqual(str(cm.exception), path[0])
+        self.assertEqual(str(cm.exception), "'{}'".format(path[-1]))
 # if __name__ == "__main__":
     # unittest.main()
