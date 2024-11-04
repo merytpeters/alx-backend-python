@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Testing for file utils.py"""
-from parameterized import parameterized
-from typing import Any, Dict, Mapping, Sequence
 import unittest
 from unittest.mock import Mock, patch
+from typing import Any, Dict, Mapping, Sequence
+from parameterized import parameterized
 from utils import access_nested_map, get_json, memoize
 
 
@@ -17,6 +17,7 @@ class TestAccessNestedMap(unittest.TestCase):
     def test_access_nested_map(
         self, nested_map: Mapping, path: Sequence, expected: Any
     ):
+        """Test for access_nested_map"""
         self.assertEqual(access_nested_map(nested_map, path), expected)
 
     @parameterized.expand([
@@ -51,6 +52,7 @@ class TestGetJson(unittest.TestCase):
 class TestMemoize(unittest.TestCase):
     """Test Memoize"""
     class TestClass:
+        """Test Class for memoize"""
         def a_method(self):
             """memoize method"""
             return 42
