@@ -107,15 +107,13 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         """Stop the patcher for requests.get"""
         cls.get_patcher.stop()
 
-    def test_public_repos(self):
-        """Test public_repos method using integration test fixtures"""
+    """def test_public_repos(self):
         client = GithubOrgClient("test_org")
         expected_repos = [repo["name"] for repo in self.repos_payload]
         result = client.public_repos()
         self.assertEqual(result, expected_repos)
 
     def test_public_repos_with_license(self):
-        """Test that public_repos filters repos by license when specified."""
         client = GithubOrgClient("google")
         apache_repos = [
             repo["name"] for repo in self.repos_payload
@@ -124,4 +122,18 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
         result = client.public_repos(license="apache-2.0")
 
-        self.assertEqual(result, apache_repos)
+        self.assertEqual(result, apache_repos)"""
+
+    def test_public_repos(self):
+        """Test public_repos method using integration test fixtures"""
+        client = GithubOrgClient(self.payload["login"])
+        public_repos = client.public_repos()
+
+        self.assertEqual(public_repos, self.expected_repos)
+
+    def test_public_repos_with_license(self):
+        """Test that public_repos filters repos by license when specified."""
+        client = GithubOrgClient(self.payload["login"])
+        public_repos_with_license = client.public_repos(license="apache-2.0")
+
+        self.assertEqual(public_repos_with_license, self.apache2_repos)
