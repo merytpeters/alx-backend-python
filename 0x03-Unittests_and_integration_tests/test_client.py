@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Test for client file"""
 import unittest
-from unittest.mock import patch, PropertyMock
+from unittest.mock import patch, Mock, PropertyMock
 from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
 from fixtures import TEST_PAYLOAD
@@ -93,20 +93,35 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
         def get_json_side_effect(url):
             if url == "https://api.github.com/orgs/test_org":
-                return cls.payload[0][0]
+                return cls.payload
             elif url == "https://api.github.com/orgs/test_org/repos":
-                return cls.payload[0][1]
-            return None
+                return cls.payload
+            return {}
 
-        cls.mock_get.return_value.json.side_effect = get_json_side_effect
+        cls.mock_get.side_effect = lambda url: Mock(
+            json=lambda: get_json_side_effect(url)
+        )
 
     @classmethod
     def tearDownClass(cls):
         """Stop the patcher for requests.get"""
         cls.get_patcher.stop()
 
-    """def test_public_repos(self):
-        Test public_repos method using integration test fixtures
+    def test_public_repos(self):
+        """Test public_repos method using integration test fixtures"""
         client = GithubOrgClient("test_org")
-        expected_repos = client.public_repos()
-        self.assertEqual(result, self.expected_repos)"""
+        expected_repos = [repo["name"] for repo in self.repos_payload]
+        result = client.public_repos()
+        self.assertEqual(result, expected_repos)
+
+    def test_public_repos_with_license(self):
+        """Test that public_repos filters repos by license when specified."""
+        client = GithubOrgClient("google")
+        apache_repos = [
+            repo["name"] for repo in self.repos_payload
+            if repo.get("license", {}).get("key") == "apache-2.0"
+        ]
+
+        result = client.public_repos(license="apache-2.0")
+
+        self.assertEqual(result, apache_repos)
