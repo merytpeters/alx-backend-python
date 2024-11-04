@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 """Testing for file utils.py"""
-
-
 from parameterized import parameterized
-from typing import Any, Callable, Dict, Mapping, Sequence
+from typing import Any, Dict, Mapping, Sequence
 import unittest
 from unittest.mock import Mock, patch
 from utils import access_nested_map, get_json, memoize
