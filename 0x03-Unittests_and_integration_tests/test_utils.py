@@ -57,10 +57,12 @@ class TestMemoize(unittest.TestCase):
         class TestClass:
             """Test Class"""
             def a_method(self):
+                """memoize method"""
                 return 42
 
             @memoize
             def a_property(self):
+                """memoize property"""
                 return self.a_method()
 
         test_instance = TestClass()
