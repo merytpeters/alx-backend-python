@@ -2,8 +2,9 @@
 """Test for client file"""
 import unittest
 from unittest.mock import patch, PropertyMock
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
+from fixtures import TEST_PAYLOAD
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -77,3 +78,35 @@ class TestGithubOrgClient(unittest.TestCase):
 
         result = client.has_license(repo, license_key)
         self.assertEqual(result, expected)
+
+
+@parameterized_class([
+    {"payload": TEST_PAYLOAD}
+])
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """Test Integration Class"""
+    @classmethod
+    def setUpClass(cls):
+        """Set up the patcher for requests.get"""
+        cls.get_patcher = patch('requests.get')
+        cls.mock_get = cls.get_patcher.start()
+
+        def get_json_side_effect(url):
+            if url == "https://api.github.com/orgs/test_org":
+                return cls.payload[0][0]
+            elif url == "https://api.github.com/orgs/test_org/repos":
+                return cls.payload[0][1]
+            return None
+
+        cls.mock_get.return_value.json.side_effect = get_json_side_effect
+
+    @classmethod
+    def tearDownClass(cls):
+        """Stop the patcher for requests.get"""
+        cls.get_patcher.stop()
+
+    """def test_public_repos(self):
+        Test public_repos method using integration test fixtures
+        client = GithubOrgClient("test_org")
+        expected_repos = client.public_repos()
+        self.assertEqual(result, self.expected_repos)"""
